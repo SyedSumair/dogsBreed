@@ -40,44 +40,28 @@ public class ImageAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (null == convertView) {
+        final MyViewHolder viewHolder;
+
+        if (convertView==null) {
             convertView = inflater.inflate(R.layout.gridview_item_image, parent, false);
+            viewHolder = new MyViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        }else{
+            viewHolder =(MyViewHolder) convertView.getTag();
         }
 
-        final ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
-        final ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.pbar);
-        Target t = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                if (bitmap != null) {
-                    imageView.setImageBitmap(bitmap);
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        };
-        Picasso.with(context).load(imageUrls.get(position)).into(t);
-        imageView.setTag(t);
-
-
+        Picasso.with(context).load(imageUrls.get(position)).into(viewHolder.ivImg);
+        
         return convertView;
     }
-//    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-//        @Override
-//        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-//            // do something with the bitmap
-//            // for demonstration purposes, let's just set it to an ImageView
-//            imageView.setImageBitmap(bitmap);
-//            imageView.setVisibility(View.VISIBLE);
-//            pbar.setVisibility(View.GONE);
-//        }
-//    };
+    class MyViewHolder{
+        View view;
+        ImageView ivImg;
+        ProgressBar pbar;
+        MyViewHolder(View view){
+            this.view = view;
+            this.ivImg = (ImageView) view.findViewById(R.id.imageView);
+            this.pbar = (ProgressBar) view.findViewById(R.id.pbar);
+        }
+    }
 }
